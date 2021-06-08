@@ -1,4 +1,9 @@
 // rcc - ReCT vv2.3 
 package sys; use sys;
-
-Print("Hello World!");
+package io; use io;
+Write("Source file: ");
+set sourceFile <- Input();
+if(!FileExists(sourceFile)){
+    Print("Invalid file!");
+    die(0);
+}
