@@ -1,6 +1,9 @@
 // rcc - ReCT v2.3 
 package sys; use sys;
 package io; use io;
+
+#attach("Classes/Compiler/Lexing/lexer.rct");
+
 //Read a file, not used rn
 //Write("Source file: ");
 //set sourceFile <- Input();
@@ -12,5 +15,4 @@ package io; use io;
 //}
 
 set code <- "CODE HERE" //DEBUG: Set the code to this
-
-#attatch("Classes/Compiler/Lexing/lexer.rct"); //...
+Lex();
