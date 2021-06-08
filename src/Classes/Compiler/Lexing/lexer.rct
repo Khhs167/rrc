@@ -1,5 +1,5 @@
-//rcc - lexer.rct - ReCT v 2.3
+// Compiler/Lexing/lexer in rcc
 //Yea, this lexes :)
 function Lex() {
-    Print("HI")
+    Print("LEXING FFS");
 }

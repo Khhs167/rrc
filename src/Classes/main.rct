@@ -2,7 +2,7 @@
 package sys; use sys;
 package io; use io;
 
-#attach("Classes/Compiler/Lexing/lexer.rct");
+#attach("Compiler/Lexing/lexer.rct");
 
 //Read a file, not used rn
 //Write("Source file: ");
