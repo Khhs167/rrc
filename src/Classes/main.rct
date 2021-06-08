@@ -1,9 +1,16 @@
-// rcc - ReCT vv2.3 
+// rcc - ReCT v2.3 
 package sys; use sys;
 package io; use io;
+//Read a file, not used rn
 Write("Source file: ");
 set sourceFile <- Input();
+
+//Check if file exists
 if(!FileExists(sourceFile)){
-    Print("Invalid file!");
-    die(0);
+    //Print("Invalid file!");
+    //die(0);
 }
+
+set code <- "CODE HERE" //DEBUG: Set the code to this
+
+#attatch("Classes/Compiler/Lexing/lexer.rct"); //...
