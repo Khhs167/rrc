@@ -3,7 +3,7 @@
     "tasks": [
         {
             "label": "buildrect",
-            "command": "rctc",
+            "command": "./build.cmd",
             "type": "shell",
             "args": [
                 "./Classes/main.rct",

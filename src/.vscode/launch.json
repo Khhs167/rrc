@@ -3,12 +3,12 @@
     "configurations": [
         {
             "name": ".NET Core Launch (console)",
-            "type": "coreclr",
+            "type": "cmd",
             "request": "launch",
             "preLaunchTask": "buildrect",
-            "program": "dotnet",
+            "program": "rctc",
             "args": [
-                "${workspaceFolder}/Build/¨rcc.dll"
+                "run"
             ],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
