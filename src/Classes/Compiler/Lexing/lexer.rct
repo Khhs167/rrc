@@ -1,26 +1,97 @@
 // Compiler/Lexing/lexer in rcc
-//Yea, this lexes :)
+// Yea, this lexes :)
+
+////// PREDEFINITIONS //////
+
+set pointer <- 0;
+set tokens <- make Token array(0);
+
+////// MAIN TOKEN BIT //////
+
 function Lex() {
-    Print(string(GenToken(TokenType -> String, "hi") -> tokenType))
+    while(!EOF()){
+
+        // Ok, do checking here ig //
+        if (IsLetter(Current())) { tokens ->Push(GenToken(TokenType ->Word, LexWord())); pointer++; continue; }
+        //Print error, noice
+        SetConsoleForeground(4);
+        Print("Why did u try and do a " + Current() + "?");
+        SetConsoleForeground(7);
+
+        //Increase pointer, dont get stuck
+        pointer++;
+    }
 }
+
+
+
+function LexWord() string{
+    var word <- "";
+    while(IsLetter(Current()) && !EOF()){
+        word <-+ Current();
+        pointer++;
+    }
+    return word;
+}
+
+
+
+// Here we define functions to get deeta //
+
+function Current() string { return Peek(0); }   // Current char in code
+function Peek(offset int) string { if (EOFO(offset)) return ""; return code ->Substring(pointer + offset, 1); } // Peek into the future
+function EOF() bool { return pointer >= code ->GetLength(); }  // Is it EOF at current?
+function EOFO(offset int) bool { return pointer + offset >= code ->GetLength(); }   // Is it EOF in [offset] chars
+
+
+////// TOKEN STORAGE PART //////
 
 
 // Token class, to store tokens in :)
 class Token{
-    function constructor(){
-        set TokenType tokenType;
-        set string value;
+    set TokenType tokenType;
+    set string value;
+    function Constructor(){
+        
     }
 }
 
-//All types of tokens
+// All types of tokens
 enum TokenType{
     String, Num, Word
 }
-//Generate a token, due to poor constructors
+// Generate a token, due to poor constructors
 set function GenToken(tokenType TokenType, val string) Token {
     var t <- make Token();
     t -> tokenType <- tokenType;
     t -> value <- val;
     return t;
+}
+
+////// OTHER SHID //////
+
+
+//Yoinked from scrapshell
+function IsLetter(char string) bool
+{
+    var letters <- "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    from (i <- 0) to letters->GetLength() -1
+    {
+        if (char = letters->Substring(i, 1)) return true;
+    }
+
+    return false;
+}
+
+function IsDigit(char string) bool
+{
+    var digits <- "1234567890";
+
+    from (i <- 0) to digits->GetLength() -1
+    {
+        if (char = digits->Substring(i, 1)) return true;
+    }
+
+    return false;
 }
