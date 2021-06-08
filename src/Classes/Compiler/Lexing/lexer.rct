@@ -1,5 +1,26 @@
 // Compiler/Lexing/lexer in rcc
 //Yea, this lexes :)
 function Lex() {
-    Print("LEXING FFS");
+    Print(string(GenToken(TokenType -> String, "hi") -> tokenType))
+}
+
+
+// Token class, to store tokens in :)
+class Token{
+    function constructor(){
+        set TokenType tokenType;
+        set string value;
+    }
+}
+
+//All types of tokens
+enum TokenType{
+    String, Num, Word
+}
+//Generate a token, due to poor constructors
+set function GenToken(tokenType TokenType, val string) Token {
+    var t <- make Token();
+    t -> tokenType <- tokenType;
+    t -> value <- val;
+    return t;
 }
