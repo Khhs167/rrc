@@ -1,4 +1,4 @@
-// ¨rcc - ReCT vv2.3 
+// rcc - ReCT vv2.3 
 package sys; use sys;
 
 Print("Hello World!");

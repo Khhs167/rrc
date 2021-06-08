@@ -1,1 +1,18 @@
-{"version": "0.2.0","configurations": [{"name": ".NET Core Launch (console)","type": "coreclr","request": "launch","preLaunchTask": "buildrect","program": "dotnet","args": ["${workspaceFolder}/Build/¨rcc.dll"],"cwd": "${workspaceFolder}","stopAtEntry": false,"console": "internalConsole"}]}
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": ".NET Core Launch (console)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "buildrect",
+            "program": "dotnet",
+            "args": [
+                "${workspaceFolder}/Build/¨rcc.dll"
+            ],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        }
+    ]
+}

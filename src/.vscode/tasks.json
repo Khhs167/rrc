@@ -1,1 +1,26 @@
-{"version": "2.0.0","tasks": [{"label": "buildrect","command": "rctc","type": "shell","args": ["./Classes/main.rct", "-s", "-f", "-o", "./Build/rcc.dll"],"presentation": {"reveal": "always"},"group": "build"}]}
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "buildrect",
+            "command": "rctc",
+            "type": "shell",
+            "args": [
+                "./Classes/main.rct",
+                "-s",
+                "-f",
+                "-o",
+                "./Build/rcc.dll"
+            ],
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}
+    
