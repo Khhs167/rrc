@@ -14,7 +14,7 @@ package io; use io;
     //die(0);
 //}
 
-set code <- "package sys" //DEBUG: Set the code to this
+set code <- ReadFile("Build/test.rct") //DEBUG: Set the code to this
 Lex();
 for(var i <- 0; i < tokens -> GetLength(); i++){
     Print("[" + string(tokens[i] -> tokenType) + ", " + tokens[i] -> value + "]");

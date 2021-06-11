@@ -12,7 +12,19 @@ function Lex() {
     while(!EOF()){
 
         // Ok, do checking here ig //
-        if (IsLetter(Current())) { tokens ->Push(GenToken(TokenType ->Word, LexWord())); pointer++; continue; }
+
+        // Simple cases, newline, blanks etc
+        if(Current() = " ") {pointer++; continue;}
+        if(Current() = "\n") { tokens->Push(GenToken(TokenType->Newline, "")); pointer++; continue;}
+        if(Current() = ";") { tokens->Push(GenToken(TokenType->Newline, "")); pointer++; continue;}
+        if(Current() = ";") { tokens->Push(GenToken(TokenType->Newline, "")); pointer++; continue;}
+        if(Current() = "(") { tokens->Push(GenToken(TokenType->OpenParenthasis, "")); pointer++; continue;}
+        if(Current() = ")") { tokens->Push(GenToken(TokenType->CloseParenthasis, "")); pointer++; continue;}
+        if(Current() = Char(13)) { pointer++; continue; }
+
+        if (IsLetter(Current())) { tokens ->Push(GenToken(TokenType ->Word, LexWord())); continue; }
+        if(Current() = ":" && Peek(1) = ":") { tokens->Push(GenToken(TokenType->PackageAcs, "")); pointer++; pointer++; continue;}
+        if (Current() = Char(34)) { tokens ->Push(GenToken(TokenType ->String, LexString())); pointer++; continue; }
         //Print error, noice
         SetConsoleForeground(4);
         Print("Why did u try and do a " + Current() + "?");
@@ -32,6 +44,16 @@ function LexWord() string{
         pointer++;
     }
     return word;
+}
+
+function LexString() string{
+    var str <- "";
+    pointer++
+    while(Current() != Char(34) && !EOF()){
+        str <-+ Current();
+        pointer++;
+    }
+    return str;
 }
 
 
@@ -58,7 +80,8 @@ class Token{
 
 // All types of tokens
 enum TokenType{
-    String, Num, Word
+    String, Num, Word, PackageAcs, Newline,
+    OpenParenthasis, CloseParenthasis
 }
 // Generate a token, due to poor constructors
 set function GenToken(tokenType TokenType, val string) Token {
