@@ -1,3 +1,4 @@
+![alt text](graphics/discord.png)
 # ReCT ReCT Compiler
 A ReCT compiler in ReCT
 
