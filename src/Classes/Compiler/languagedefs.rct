@@ -8,9 +8,10 @@ function ContainsItem(arr stringArr, item string) bool{
 }
 
 enum ErrorType{
-    InvalidTokenError, UnknownError
+    InvalidTokenError, UnknownError, InvalidCharacterError
 }
 
 set keywords <- make string array(0)
 keywords->Push("package");
 keywords->Push("var");
+keywords->Push("use");

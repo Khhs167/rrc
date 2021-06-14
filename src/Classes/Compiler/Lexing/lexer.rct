@@ -19,6 +19,7 @@ function Lex() {
         if(Current() = ";") { tokens->Push(GenToken(TokenType->Newline, "")); pointer++; continue;}
         if(Current() = "(") { tokens->Push(GenToken(TokenType->OpenParenthasis, "")); pointer++; continue;}
         if(Current() = ")") { tokens->Push(GenToken(TokenType->CloseParenthasis, "")); pointer++; continue;}
+        if(Current() = ",") { tokens->Push(GenToken(TokenType->Comma, "")); pointer++; continue;}
         if(Current() = Char(13)) { pointer++; continue; }
 
         if (IsLetter(Current())) { var word <- LexWord(); var wordType <- LexWordType(word); tokens ->Push(GenToken(wordType, word)); continue; }
@@ -26,7 +27,7 @@ function Lex() {
         if (Current() = Char(34)) { tokens ->Push(GenToken(TokenType ->String, LexString())); pointer++; continue; }
         //Print error, noice
         SetConsoleForeground(4);
-        PrintError("Why did u try and do a " + Current() + "?", ErrorType ->UnknownError);
+        PrintError("Unexpected character: " + Char(34) + Current() + Char(34), ErrorType ->InvalidCharacterError);
         SetConsoleForeground(7);
 
         //Increase pointer, dont get stuck
@@ -90,7 +91,7 @@ class Token{
 // All types of tokens
 enum TokenType{
     String, Num, Word, PackageAcs, Newline,
-    OpenParenthasis, CloseParenthasis, Keyword
+    OpenParenthasis, CloseParenthasis, Keyword, Comma
 }
 // Generate a token, due to poor constructors
 set function GenToken(tokenType TokenType, val string) Token {
