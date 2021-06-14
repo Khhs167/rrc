@@ -2,7 +2,6 @@
 // Yea, this lexes :)
 
 ////// PREDEFINITIONS //////
-
 set pointer <- 0;
 set tokens <- make Token array(0);
 
@@ -22,12 +21,12 @@ function Lex() {
         if(Current() = ")") { tokens->Push(GenToken(TokenType->CloseParenthasis, "")); pointer++; continue;}
         if(Current() = Char(13)) { pointer++; continue; }
 
-        if (IsLetter(Current())) { tokens ->Push(GenToken(TokenType ->Word, LexWord())); continue; }
+        if (IsLetter(Current())) { tokens ->Push(GenToken(LexWordType(LexWord()), LexWord())); continue; }
         if(Current() = ":" && Peek(1) = ":") { tokens->Push(GenToken(TokenType->PackageAcs, "")); pointer++; pointer++; continue;}
         if (Current() = Char(34)) { tokens ->Push(GenToken(TokenType ->String, LexString())); pointer++; continue; }
         //Print error, noice
         SetConsoleForeground(4);
-        Print("Why did u try and do a " + Current() + "?");
+        PrintError("Why did u try and do a " + Current() + "?");
         SetConsoleForeground(7);
 
         //Increase pointer, dont get stuck
@@ -35,8 +34,15 @@ function Lex() {
     }
 }
 
+function PrintError(error string){
+        SetConsoleForeground(4);
+        Print("ERROR: " + error);
+        SetConsoleForeground(7);
+}
 
-
+function LexWordType(token string) TokenType{
+    return TokenType->Word;
+}
 function LexWord() string{
     var word <- "";
     while(IsLetter(Current()) && !EOF()){
@@ -81,7 +87,7 @@ class Token{
 // All types of tokens
 enum TokenType{
     String, Num, Word, PackageAcs, Newline,
-    OpenParenthasis, CloseParenthasis
+    OpenParenthasis, CloseParenthasis, Keyword
 }
 // Generate a token, due to poor constructors
 set function GenToken(tokenType TokenType, val string) Token {

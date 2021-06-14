@@ -3,6 +3,7 @@ package sys; use sys;
 package io; use io;
 
 #attach("Compiler/Lexing/lexer.rct");
+#attach("Compiler/Parsing/parser.rct");
 
 //Read a file, not used rn
 //Write("Source file: ");
@@ -19,3 +20,4 @@ Lex();
 for(var i <- 0; i < tokens -> GetLength(); i++){
     Print("[" + string(tokens[i] -> tokenType) + ", " + tokens[i] -> value + "]");
 }
+Parse();

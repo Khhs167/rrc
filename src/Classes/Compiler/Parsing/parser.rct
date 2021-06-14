@@ -1,0 +1,20 @@
+function Parse(){
+    pointer <- 0;
+    while(!EOFT()){
+        
+        PrintError("Y u do type: " + string(CurrentToken() -> tokenType));
+        
+        pointer++;
+    }
+}
+
+
+function CurrentToken() Token { return PeekToken(0); }   // Current token in code
+function PeekToken(offset int) Token { if (EOFO(offset)) return GenToken(TokenType -> Word, "Null"); return tokens[pointer + offset] } // Peek into the future
+function EOFT() bool { return pointer >= tokens ->GetLength(); }  // Is it EOF at current?
+function EOFOT(offset int) bool { return pointer + offset >= tokens ->GetLength(); }   // Is it EOF in [offset] chars
+
+abs class Container{
+    virt set Ctype <- "Undefined";
+    virt set any value <- null;
+}
