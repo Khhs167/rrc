@@ -21,12 +21,12 @@ function Lex() {
         if(Current() = ")") { tokens->Push(GenToken(TokenType->CloseParenthasis, "")); pointer++; continue;}
         if(Current() = Char(13)) { pointer++; continue; }
 
-        if (IsLetter(Current())) { tokens ->Push(GenToken(LexWordType(LexWord()), LexWord())); continue; }
+        if (IsLetter(Current())) { var word <- LexWord(); var wordType <- LexWordType(word); tokens ->Push(GenToken(wordType, word)); continue; }
         if(Current() = ":" && Peek(1) = ":") { tokens->Push(GenToken(TokenType->PackageAcs, "")); pointer++; pointer++; continue;}
         if (Current() = Char(34)) { tokens ->Push(GenToken(TokenType ->String, LexString())); pointer++; continue; }
         //Print error, noice
         SetConsoleForeground(4);
-        PrintError("Why did u try and do a " + Current() + "?");
+        PrintError("Why did u try and do a " + Current() + "?", ErrorType ->UnknownError);
         SetConsoleForeground(7);
 
         //Increase pointer, dont get stuck
@@ -34,13 +34,16 @@ function Lex() {
     }
 }
 
-function PrintError(error string){
+function PrintError(error string, errortype ErrorType){
         SetConsoleForeground(4);
-        Print("ERROR: " + error);
+        Print("ERROR: " + string(errortype) + ": " + error);
         SetConsoleForeground(7);
 }
 
 function LexWordType(token string) TokenType{
+    if(ContainsItem(keywords, token)){
+        return TokenType->Keyword
+    }
     return TokenType->Word;
 }
 function LexWord() string{

@@ -1,0 +1,16 @@
+function ContainsItem(arr stringArr, item string) bool{
+    for (var i <- 0; i < arr->GetLength(); i++){
+        if(arr[i] = item){
+            return true;
+        }
+    }
+    return false;
+}
+
+enum ErrorType{
+    InvalidTokenError, UnknownError
+}
+
+set keywords <- make string array(0)
+keywords->Push("package");
+keywords->Push("var");

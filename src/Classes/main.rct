@@ -4,6 +4,7 @@ package io; use io;
 
 #attach("Compiler/Lexing/lexer.rct");
 #attach("Compiler/Parsing/parser.rct");
+#attach("Compiler/languagedefs.rct");
 
 //Read a file, not used rn
 //Write("Source file: ");

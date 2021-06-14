@@ -1,13 +1,20 @@
 function Parse(){
     pointer <- 0;
     while(!EOFT()){
-        
-        PrintError("Y u do type: " + string(CurrentToken() -> tokenType));
-        
+
+        InvalidTokenError(CurrentToken());
         pointer++;
     }
 }
 
+function InvalidTokenError(token Token){
+        if(CurrentToken() -> value != ""){
+            PrintError("Unexpected tokentype: " + Char(34) + string(token -> tokenType) + Char(34) + " with value: " + Char(34) + string(token -> value) + Char(34), ErrorType->InvalidTokenError);
+        }
+        else{
+            PrintError("Unexpected tokentype: " + Char(34) + string(token -> tokenType) + Char(34), ErrorType->InvalidTokenError);
+        }
+}
 
 function CurrentToken() Token { return PeekToken(0); }   // Current token in code
 function PeekToken(offset int) Token { if (EOFO(offset)) return GenToken(TokenType -> Word, "Null"); return tokens[pointer + offset] } // Peek into the future
