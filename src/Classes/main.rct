@@ -17,12 +17,14 @@ package io; use io;
 //}
 
 set code <- ReadFile("Build/test.rct") //DEBUG: Set the code to this
+Print("Code:\n\n" + code)
+Print("");
 Lex();
 //for(var i <- 0; i < tokens -> GetLength(); i++){
 //    Print("[" + string(tokens[i] -> tokenType) + ", " + tokens[i] -> value + "]");
 //}
 Parse();
-var layer <- 0;
+Print("Containers/Statements:\n")
 for(var i <- 0; i < containers -> GetLength(); i++){
-    PrintContainer(containers[i], "")
+    PrintContainer(containers[i], " ")
 }
