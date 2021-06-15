@@ -1,0 +1,3 @@
+//Compiler/Diagnostics/Diagnostics in rrc
+#attach("Compiler/Diagnostics/error.rct");
+#attach("Compiler/Diagnostics/errorOutput.rct");

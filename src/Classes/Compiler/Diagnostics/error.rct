@@ -1,0 +1,34 @@
+//Compiler/Diagnostics/error in rrc
+
+////// PREDEFINITIONS //////
+set errors <- make Error array(0);
+set hasError <- false;
+
+////// REPORTING //////
+set function ReportError(msg string, etype ErrorType, pos Position)
+{
+    errors->Push(make Error(pos, etype, msg));
+    hasError <- true;
+}
+
+////// ERROR CLASS //////
+class Error
+{
+    set Position Pos;
+    set ErrorType Type;
+    set string Message;
+
+    function Constructor(pos Position, etype ErrorType, msg string)
+    {
+        Pos <- pos;  Type <- etype;  Message <- msg;
+    }
+}
+
+////// ERROR TYPES //////
+enum ErrorType
+{
+    InvalidTokenError,
+    UnknownError,
+    InvalidCharacterError,
+    UnimplementedError
+}

@@ -5,33 +5,39 @@
 set pointer <- 0;
 set tokens <- make Token array(0);
 
-////// MAIN TOKEN BIT //////
 
+////// MAIN TOKEN BIT //////
 function Lex() {
     while(!EOF()){
 
         // Ok, do checking here ig //
 
-        // Simple cases, newline, blanks etc
-        if(Current() = " ") {pointer++; continue;}
-        if(Current() = "\n") { tokens->Push(GenToken(TokenType->Newline, "")); pointer++; continue;}
-        if(Current() = ";") { tokens->Push(GenToken(TokenType->Newline, "")); pointer++; continue;}
-        if(Current() = ";") { tokens->Push(GenToken(TokenType->Newline, "")); pointer++; continue;}
-        if(Current() = "(") { tokens->Push(GenToken(TokenType->OpenParenthasis, "")); pointer++; continue;}
-        if(Current() = ")") { tokens->Push(GenToken(TokenType->CloseParenthasis, "")); pointer++; continue;}
-        if(Current() = ",") { tokens->Push(GenToken(TokenType->Comma, "")); pointer++; continue;}
-        if(Current() = Char(13)) { pointer++; continue; }
+        var pos <- GetPos(pointer, code);
 
-        if (IsLetter(Current())) { var word <- LexWord(); var wordType <- LexWordType(word); tokens ->Push(GenToken(wordType, word)); continue; }
-        if(Current() = ":" && Peek(1) = ":") { tokens->Push(GenToken(TokenType->PackageAcs, "")); pointer++; pointer++; continue;}
-        if (Current() = Char(34)) { tokens ->Push(GenToken(TokenType ->String, LexString())); pointer++; continue; }
+        // whitespaces
+        if(Current() = " ")  { Step(1); continue; }
+        if(Current() = "\t") { Step(1); continue; }
+        if(Current() = "\r") { Step(1); continue; }
+        if(Current() = "\n") { tokens->Push(make Token(TokenType->Newline, "", pos)); Step(1); continue; }
+        if(Current() = ";")  { tokens->Push(make Token(TokenType->Newline, "", pos)); Step(1); continue; }
+
+        //expression characters
+        if(Current() = "(") { tokens->Push(make Token(TokenType->OpenParenthasis, "", pos));     Step(1); continue; }
+        if(Current() = ")") { tokens->Push(make Token(TokenType->CloseParenthasis, "", pos));    Step(1); continue; }
+        if(Current() = ",") { tokens->Push(make Token(TokenType->Comma, "", pos));               Step(1); continue; }
+
+        if (IsLetter(Current())) { var word <- LexWord(); var wordType <- LexWordType(word); tokens ->Push(make Token(wordType, word, pos)); continue; }
+
+        //lets keep it simple for now. -rc
+        //if(Current() = ":" && Peek(1) = ":") { tokens->Push(GenToken(TokenType->PackageAcs, "")); pointer++; pointer++; continue;}
+
+        if (Current() = """") { tokens ->Push(make Token(TokenType ->String, LexString(), pos)); pointer++; continue; }
+
         //Print error, noice
-        SetConsoleForeground(4);
-        PrintError("Unexpected character: " + Char(34) + Current() + Char(34), ErrorType ->InvalidCharacterError);
-        SetConsoleForeground(7);
+        ReportError("Unexpected character: """ + Current() + """", ErrorType->InvalidCharacterError, GetPos(pointer, code));
 
         //Increase pointer, dont get stuck
-        pointer++;
+        Step(1);
     }
 }
 
@@ -69,62 +75,8 @@ function LexString() string{
 
 
 // Here we define functions to get deeta //
-
-function Current() string { return Peek(0); }   // Current char in code
-function Peek(offset int) string { if (EOFO(offset)) return ""; return code ->Substring(pointer + offset, 1); } // Peek into the future
-function EOF() bool { return pointer >= code ->GetLength(); }  // Is it EOF at current?
-function EOFO(offset int) bool { return pointer + offset >= code ->GetLength(); }   // Is it EOF in [offset] chars
-
-
-////// TOKEN STORAGE PART //////
-
-
-// Token class, to store tokens in :)
-class Token{
-    set TokenType tokenType;
-    set string value;
-    function Constructor(){
-        
-    }
-}
-
-// All types of tokens
-enum TokenType{
-    String, Num, Word, PackageAcs, Newline,
-    OpenParenthasis, CloseParenthasis, Keyword, Comma
-}
-// Generate a token, due to poor constructors
-set function GenToken(tokenType TokenType, val string) Token {
-    var t <- make Token();
-    t -> tokenType <- tokenType;
-    t -> value <- val;
-    return t;
-}
-
-////// OTHER SHID //////
-
-
-//Yoinked from scrapshell
-function IsLetter(char string) bool
-{
-    var letters <- "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-    from (i <- 0) to letters->GetLength() -1
-    {
-        if (char = letters->Substring(i, 1)) return true;
-    }
-
-    return false;
-}
-
-function IsDigit(char string) bool
-{
-    var digits <- "1234567890";
-
-    from (i <- 0) to digits->GetLength() -1
-    {
-        if (char = digits->Substring(i, 1)) return true;
-    }
-
-    return false;
-}
+function Current() string { return Peek(0); }                                                                       // Current char in code
+function Peek(offset int) string { if (EOFO(offset)) return ""; return code ->Substring(pointer + offset, 1); }     // Peek into the future
+function EOF() bool { return pointer >= code ->GetLength(); }                                                       // Is it EOF at current?
+function EOFO(offset int) bool { return pointer + offset >= code ->GetLength(); }                                   // Is it EOF in [offset] chars
+function Step(amount int) { pointer <-+ amount; }                                                                   // QOL function
