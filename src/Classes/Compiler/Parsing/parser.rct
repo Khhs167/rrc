@@ -13,7 +13,15 @@ function Parse(){
         if(string(CurrentToken() ->Type) = string(TokenType -> Word)){
             ParseWord(); continue;
         }
-
+        if(string(CurrentToken() ->Type) = string(TokenType -> KeyFunc)){
+            ParseKeyFunc(); continue;
+        }
+        if(string(CurrentToken() ->Type) = string(TokenType -> Num)){
+            pointer++; continue;
+        }
+        if(string(CurrentToken() ->Type) = string(TokenType -> Operation)){
+            pointer++; continue;
+        }
         InvalidTokenError(CurrentToken());
         pointer++;
     }
@@ -46,6 +54,17 @@ function ParseWord(){
     }
     */
 
+    ReportError("Not Implemented yet!", ErrorType->UnimplementedError, CurrentToken()->Pos);
+    InvalidTokenError(CurrentToken());
+    pointer++;
+}
+
+
+function ParseKeyFunc(){
+    if(CurrentToken() -> Value = "Print"){
+        ParsePrintToken();
+        return;
+    }
     ReportError("Not Implemented yet!", ErrorType->UnimplementedError, CurrentToken()->Pos);
     InvalidTokenError(CurrentToken());
     pointer++;
@@ -89,8 +108,26 @@ function ParseKeyword(){
 }
 
 
+// Function parsing(print etc) //
+// Ik this might be too early on, but i just want to not get 500 errors
+function ParsePrintToken(){ // Words cannot describe my confusion, as ParsePrint is defined but never mentioned in the files...
+    if(string(PeekToken(1) -> Type) = string(TokenType -> OpenParenthasis)){
+        Step(1);
+        if(string(PeekToken(1) -> Type) = string(TokenType -> String)){
+            containers ->Push(GenContainer("print", GenContainer("Value", PeekToken(1) -> Value)));
+            Step(3);
+            return;
+        }
+    }
+    InvalidTokenError(PeekToken(1));
+    Step(1);
+}
+
 function InvalidTokenError(token Token){
     ReportError("Unexpected tokentype: """ + string(token -> Type) + """ with Value: " + string(token -> Value), ErrorType->InvalidTokenError, token->Pos);
+}
+function InvalidUsageFuncError(token Token){
+    ReportError("Function: """ + string(token -> Type) + """ cannot be used as a variable", ErrorType->InvalidUsageError, token->Pos);
 }
 
 function CurrentToken() Token { return PeekToken(0); }   // Current token in code

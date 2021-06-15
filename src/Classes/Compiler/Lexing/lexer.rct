@@ -28,12 +28,19 @@ function Lex() {
         if(Current() = ")") { tokens->Push(make Token(TokenType->CloseParenthasis, "", pos));    Step(1); continue; }
         if(Current() = ",") { tokens->Push(make Token(TokenType->Comma, "", pos));               Step(1); continue; }
 
+        // operations
+        if(Current() = "+") { tokens->Push(make Token(TokenType->Operation, "+", pos)); Step(1); continue; }
+        if(Current() = "-") { tokens->Push(make Token(TokenType->Operation, "-", pos)); Step(1); continue; }
+        if(Current() = "/") { tokens->Push(make Token(TokenType->Operation, "/", pos)); Step(1); continue; }
+        if(Current() = "*") { tokens->Push(make Token(TokenType->Operation, "*", pos)); Step(1); continue; }
+
         if (IsLetter(Current())) { var word <- LexWord(); var wordType <- LexWordType(word); tokens ->Push(make Token(wordType, word, pos)); continue; }
+        if (IsDigit(Current())) { var num <- LexNum(); tokens ->Push(make Token(TokenType -> Num, num, pos)); continue; }
 
         //lets keep it simple for now. -rc
-        //if(Current() = ":" && Peek(1) = ":") { tokens->Push(GenToken(TokenType->PackageAcs, "")); pointer++; pointer++; continue;}
+        //if(Current() = ":" && Peek(1) = ":") { tokens->Push(GenToken(TokenType->PackageAcs, "")); Step(1); Step(1); continue;}
 
-        if (Current() = """") { tokens ->Push(make Token(TokenType ->String, LexString(), pos)); pointer++; continue; }
+        if (Current() = """") { tokens ->Push(make Token(TokenType ->String, LexString(), pos)); Step(1); continue; }
 
         //Print error, noice
         ReportError("Unexpected character: """ + Current() + """", ErrorType->InvalidCharacterError, GetPos(pointer, code));
@@ -53,26 +60,39 @@ function LexWordType(token string) TokenType{
     if(ContainsItem(keywords, token)){
         return TokenType->Keyword
     }
+    if(ContainsItem(keyfuncs, token)){
+        return TokenType->KeyFunc
+    }
     return TokenType->Word;
 }
 function LexWord() string{
     var word <- "";
     while(IsLetter(Current()) && !EOF()){
         word <-+ Current();
-        pointer++;
+        Step(1);
     }
     return word;
 }
 
+function LexNum() string{
+    var num <- "";
+    while(IsDigit(Current()) && !EOF()){
+        num <-+ Current();
+        Step(1);
+    }
+    return num;
+}
+
 function LexString() string{
     var str <- "";
-    pointer++
+    Step(1)
     while(Current() != Char(34) && !EOF()){
         str <-+ Current();
-        pointer++;
+        Step(1);
     }
     return str;
 }
+
 
 
 

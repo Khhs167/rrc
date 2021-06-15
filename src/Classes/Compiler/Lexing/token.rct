@@ -26,5 +26,8 @@ enum TokenType
     Comma,
 
     Word,
-    Keyword
+    Keyword,
+    KeyFunc,
+
+    Operation
 }

@@ -30,9 +30,7 @@ if (hasError)
     die(-1);
 }
 
-//for(var i <- 0; i < tokens -> GetLength(); i++){
-//    Print("[" + string(tokens[i] -> tokenType) + ", " + tokens[i] -> value + "]");
-//}
+
 
 Parse();
 
@@ -41,6 +39,11 @@ if (hasError)
     PrintErrors();
     die(-1);
 }
+Print("Tokens:\n")
+for(var i <- 0; i < tokens -> GetLength(); i++){
+    Print("[" + string(tokens[i] -> Type) + ", " + tokens[i] -> Value + "]");
+}
+Print("");
 
 Print("Containers/Statements:\n")
 for(var i <- 0; i < containers -> GetLength(); i++){

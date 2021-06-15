@@ -2,5 +2,6 @@
 src/Build/*
 =======
 src/Build/*
+!src/Build/test.rct
 ILtests/*
 >>>>>>> ddccf76feadd1f40afbca66b01f70932359ac7cc
