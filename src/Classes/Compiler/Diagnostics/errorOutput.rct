@@ -16,4 +16,5 @@ function PrintErrors()
         SetConsoleForeground(4);
         Print(" ] " + err->Message);
     }
+    SetConsoleForeground(7);
 }

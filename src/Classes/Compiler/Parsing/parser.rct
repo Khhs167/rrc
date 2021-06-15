@@ -52,6 +52,14 @@ function ParseWord(){
 }
 
 function ParseKeyword(){
+
+    //For now
+    ReportError("Not Implemented yet!", ErrorType->UnimplementedError, CurrentToken()->Pos);
+    InvalidTokenError(CurrentToken());
+    pointer++;
+    return;
+
+
     if(CurrentToken() -> Value = "package"){
         if(string(PeekToken(1) -> Type) = string(TokenType -> Word)){
             containers ->Push(GenContainer("packageInc", GenContainer("Value", PeekToken(1) -> Value)))

@@ -9,6 +9,8 @@ set tokens <- make Token array(0);
 ////// MAIN TOKEN BIT //////
 function Lex() {
     while(!EOF()){
+        // stick comments in front, to save resources
+        if(Current() = "/" && Peek(1) = "/") { while(Current() != "\n") { Step(1); } continue; }
 
         // Ok, do checking here ig //
 
