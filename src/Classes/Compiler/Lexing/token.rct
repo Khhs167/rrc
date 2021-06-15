@@ -1,0 +1,30 @@
+//Compiler/Lexing/token in rrc
+
+class Token
+{
+    set TokenType Type;
+    set string Value;
+    set Position Pos;
+
+    function Constructor(ttype TokenType, val string, pos Position)
+    {
+        Type <- ttype;
+        Value <- val;
+        Pos <- pos;
+    }
+}
+
+enum TokenType
+{
+    Newline,
+
+    String,
+    Num,
+    
+    OpenParenthasis,
+    CloseParenthasis,
+    Comma,
+
+    Word,
+    Keyword
+}

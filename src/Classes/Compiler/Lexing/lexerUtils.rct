@@ -1,0 +1,43 @@
+// Compiler/Lexing/lexerUtils in rcc
+
+function IsLetter(char string) bool
+{
+    var letters <- "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    from (i <- 0) to letters->GetLength() -1
+    {
+        if (char = letters->Substring(i, 1)) return true;
+    }
+
+    return false;
+}
+
+function IsDigit(char string) bool
+{
+    var digits <- "1234567890";
+
+    from (i <- 0) to digits->GetLength() -1
+    {
+        if (char = digits->Substring(i, 1)) return true;
+    }
+
+    return false;
+}
+
+function GetPos(pointer int, code string) Position
+{
+    var line <- 0;
+    var char <- 0;
+
+    from (i <- 0) to pointer
+    {
+        if (code->At(i) = "\n")
+        {
+            line++;
+            char <- 0;
+        }
+        else char++;
+    }
+
+    return make Position(line, char);
+}

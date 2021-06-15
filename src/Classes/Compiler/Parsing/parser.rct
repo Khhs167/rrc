@@ -4,13 +4,13 @@ set upackages <- make string array(0);
 function Parse(){
     pointer <- 0;
     while(!EOFT()){
-        if(string(CurrentToken() -> tokenType) = string(TokenType -> Newline)){
+        if(string(CurrentToken() ->Type) = string(TokenType -> Newline)){
             pointer++; continue;
         }
-        if(string(CurrentToken() -> tokenType) = string(TokenType -> Keyword)){
+        if(string(CurrentToken() ->Type) = string(TokenType -> Keyword)){
             ParseKeyword(); continue;
         }
-        if(string(CurrentToken() -> tokenType) = string(TokenType -> Word)){
+        if(string(CurrentToken() ->Type) = string(TokenType -> Word)){
             ParseWord(); continue;
         }
 
@@ -20,40 +20,42 @@ function Parse(){
 }
 
 function ParseWord(){
-    if(string(PeekToken(1) -> tokenType) = string(TokenType -> PackageAcs)){
-        if(ContainsItem(packages, CurrentToken() ->value)){
-            if(string(PeekToken(3) -> tokenType) = string(TokenType -> OpenParenthasis)){
+    /*if(string(PeekToken(1) -> Type) = string(TokenType -> PackageAcs)){
+        if(ContainsItem(packages, CurrentToken() ->Value)){
+            if(string(PeekToken(3) -> Type) = string(TokenType -> OpenParenthasis)){
                 var params <- make Container array(0);
-                params ->Push(GenContainer("funcName", GenContainer("value", PeekToken(2) -> value)));
+                params ->Push(GenContainer("funcName", GenContainer("Value", PeekToken(2) -> Value)));
                 pointer <-+ 3;
-                while(string(CurrentToken() -> tokenType) != string(TokenType -> CloseParenthasis)){
-                    if(string(CurrentToken() -> tokenType) = string(TokenType -> String)){
-                        params ->Push(GenContainer("string", GenContainer("value", CurrentToken() ->value)));
+                while(string(CurrentToken() -> Type) != string(TokenType -> CloseParenthasis)){
+                    if(string(CurrentToken() -> Type) = string(TokenType -> String)){
+                        params ->Push(GenContainer("string", GenContainer("Value", CurrentToken() ->Value)));
                     }
                     
                     pointer++;
                 }
-                containers ->Push(GenContainer("packageFetch", GenContainer("Call", GenContainer("values", params))));
+                containers ->Push(GenContainer("packageFetch", GenContainer("Call", GenContainer("Values", params))));
                 pointer <-+ 4;
                 return;
             }
             else{
-                containers ->Push(GenContainer("packageFetch", GenContainer("Var", GenContainer("value", PeekToken(2) -> value))))
+                containers ->Push(GenContainer("packageFetch", GenContainer("Var", GenContainer("Value", PeekToken(2) -> Value))))
                 pointer <-+3;
                 return;
             }
         }
     }
+    */
 
+    ReportError("Not Implemented yet!", ErrorType->UnimplementedError, CurrentToken()->Pos);
     InvalidTokenError(CurrentToken());
     pointer++;
 }
 
 function ParseKeyword(){
-    if(CurrentToken() -> value = "package"){
-        if(string(PeekToken(1) -> tokenType) = string(TokenType -> Word)){
-            containers ->Push(GenContainer("packageInc", GenContainer("value", PeekToken(1) -> value)))
-            packages ->Push(PeekToken(1) -> value)
+    if(CurrentToken() -> Value = "package"){
+        if(string(PeekToken(1) -> Type) = string(TokenType -> Word)){
+            containers ->Push(GenContainer("packageInc", GenContainer("Value", PeekToken(1) -> Value)))
+            packages ->Push(PeekToken(1) -> Value)
         }
         else{
             InvalidTokenError(PeekToken(1));
@@ -62,10 +64,10 @@ function ParseKeyword(){
         pointer++;
         return;
     }
-    if(CurrentToken() -> value = "use"){
-        if(string(PeekToken(1) -> tokenType) = string(TokenType -> Word)){
-            containers ->Push(GenContainer("packageUse", GenContainer("value", PeekToken(1) -> value)))
-            upackages ->Push(PeekToken(1) -> value)
+    if(CurrentToken() -> Value = "use"){
+        if(string(PeekToken(1) -> Type) = string(TokenType -> Word)){
+            containers ->Push(GenContainer("packageUse", GenContainer("Value", PeekToken(1) -> Value)))
+            upackages ->Push(PeekToken(1) -> Value)
         }
         else{
             InvalidTokenError(PeekToken(1));
@@ -80,44 +82,39 @@ function ParseKeyword(){
 
 
 function InvalidTokenError(token Token){
-        if(CurrentToken() -> value != ""){
-            PrintError("Unexpected tokentype: " + Char(34) + string(token -> tokenType) + Char(34) + " with value: " + Char(34) + string(token -> value) + Char(34), ErrorType->InvalidTokenError);
-        }
-        else{
-            PrintError("Unexpected tokentype: " + Char(34) + string(token -> tokenType) + Char(34), ErrorType->InvalidTokenError);
-        }
+    ReportError("Unexpected tokentype: """ + string(token -> Type) + """ with Value: " + string(token -> Value), ErrorType->InvalidTokenError, token->Pos);
 }
 
 function CurrentToken() Token { return PeekToken(0); }   // Current token in code
-function PeekToken(offset int) Token { if (EOFO(offset)) return GenToken(TokenType -> Word, "Null"); return tokens[pointer + offset] } // Peek into the future
+function PeekToken(offset int) Token { if (EOFO(offset)) return make Token(TokenType -> Word, "Null", Position(null)); return tokens[pointer + offset] } // Peek into the future
 function EOFT() bool { return pointer >= tokens ->GetLength(); }  // Is it EOF at current?
 function EOFOT(offset int) bool { return pointer + offset >= tokens ->GetLength(); }   // Is it EOF in [offset] chars
 
 
 class Container{
     set Ctype <- "Undefined";
-    set any value <- null;
+    set any Value <- null;
 }
 
-function GenContainer(Ctype string, value any) Container{
+function GenContainer(Ctype string, Value any) Container{
     var c <- make Container();
     c -> Ctype <- Ctype;
-    c -> value <- value;
+    c -> Value <- Value;
     return c;
 }
 
 function PrintContainer(container Container, indent string){
-    if(container -> Ctype = "value"){
-        Print(indent + "\\" + container ->Ctype + ": " + string(container -> value))
+    if(container -> Ctype = "Value"){
+        Print(indent + "\\" + container ->Ctype + ": " + string(container -> Value))
     }
-    if(container -> Ctype = "values"){
-        var values <- ContainerArr(container ->value)
-        for(var i <- 0; i < values -> GetLength(); i++){
-            PrintContainer(values[i], indent + " ")
+    if(container -> Ctype = "Values"){
+        var Values <- ContainerArr(container ->Value)
+        for(var i <- 0; i < Values -> GetLength(); i++){
+            PrintContainer(Values[i], indent + " ")
         }
     }   
-    else if(string(container -> value) = "Container"){
+    else if(string(container -> Value) = "Container"){
         Print(indent + "\\" + container ->Ctype)
-        PrintContainer(Container(container -> value), indent + " ")
+        PrintContainer(Container(container -> Value), indent + " ")
     }
 }

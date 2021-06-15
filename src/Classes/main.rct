@@ -2,8 +2,9 @@
 package sys; use sys;
 package io; use io;
 
-#attach("Compiler/Lexing/lexer.rct");
-#attach("Compiler/Parsing/parser.rct");
+#attach("Compiler/Lexing/Lexing.rct");
+#attach("Compiler/Parsing/Parsing.rct");
+#attach("Compiler/Diagnostics/Diagnostics.rct");
 #attach("Compiler/languagedefs.rct");
 
 //Read a file, not used rn
@@ -17,13 +18,30 @@ package io; use io;
 //}
 
 set code <- ReadFile("Build/test.rct") //DEBUG: Set the code to this
+
 Print("Code:\n\n" + code)
 Print("");
+
 Lex();
+
+if (hasError)
+{
+    PrintErrors();
+    die(-1);
+}
+
 //for(var i <- 0; i < tokens -> GetLength(); i++){
 //    Print("[" + string(tokens[i] -> tokenType) + ", " + tokens[i] -> value + "]");
 //}
+
 Parse();
+
+if (hasError)
+{
+    PrintErrors();
+    die(-1);
+}
+
 Print("Containers/Statements:\n")
 for(var i <- 0; i < containers -> GetLength(); i++){
     PrintContainer(containers[i], " ")

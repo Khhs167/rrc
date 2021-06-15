@@ -1,0 +1,12 @@
+//Compiler/Lexing/position in rrc
+
+class Position
+{
+    set int Line;
+    set int Char;
+
+    function Constructor(line int, char int)
+    {
+        Line <- line;  Char <- char;
+    }
+}
