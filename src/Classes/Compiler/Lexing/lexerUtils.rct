@@ -26,7 +26,7 @@ function IsDigit(char string) bool
 
 function GetPos(pointer int, code string) Position
 {
-    var line <- 0;
+    var line <- 1;
     var char <- 0;
 
     from (i <- 0) to pointer
