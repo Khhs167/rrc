@@ -1,165 +1,116 @@
-set containers <- make Container array(0);
 set packages <- make string array(0);
 set upackages <- make string array(0);
-function Parse(){
+
+set nodes <- make SyntaxNode array(0);
+
+function Parse()
+{
     pointer <- 0;
-    while(!EOFT()){
-        if(string(CurrentToken() ->Type) = string(TokenType -> Newline)){
-            pointer++; continue;
-        }
-        if(string(CurrentToken() ->Type) = string(TokenType -> Keyword)){
-            ParseKeyword(); continue;
-        }
-        if(string(CurrentToken() ->Type) = string(TokenType -> Word)){
-            ParseWord(); continue;
-        }
-        if(string(CurrentToken() ->Type) = string(TokenType -> KeyFunc)){
-            ParseKeyFunc(); continue;
-        }
-        if(string(CurrentToken() ->Type) = string(TokenType -> Num)){
-            pointer++; continue;
-        }
-        if(string(CurrentToken() ->Type) = string(TokenType -> Operation)){
-            pointer++; continue;
-        }
-        InvalidTokenError(CurrentToken());
-        pointer++;
+    while(!EOFT())
+    {
+        // normally youd do member parsing here but we dont have members like functions yet lol
+        nodes->Push(ParseStatement());
     }
 }
 
-function ParseWord(){
-    /*if(string(PeekToken(1) -> Type) = string(TokenType -> PackageAcs)){
-        if(ContainsItem(packages, CurrentToken() ->Value)){
-            if(string(PeekToken(3) -> Type) = string(TokenType -> OpenParenthasis)){
-                var params <- make Container array(0);
-                params ->Push(GenContainer("funcName", GenContainer("Value", PeekToken(2) -> Value)));
-                pointer <-+ 3;
-                while(string(CurrentToken() -> Type) != string(TokenType -> CloseParenthasis)){
-                    if(string(CurrentToken() -> Type) = string(TokenType -> String)){
-                        params ->Push(GenContainer("string", GenContainer("Value", CurrentToken() ->Value)));
-                    }
-                    
-                    pointer++;
-                }
-                containers ->Push(GenContainer("packageFetch", GenContainer("Call", GenContainer("Values", params))));
-                pointer <-+ 4;
-                return;
-            }
-            else{
-                containers ->Push(GenContainer("packageFetch", GenContainer("Var", GenContainer("Value", PeekToken(2) -> Value))))
-                pointer <-+3;
-                return;
-            }
-        }
-    }
-    */
+////// STATEMENTS //////
 
-    ReportError("Not Implemented yet!", ErrorType->UnimplementedError, CurrentToken()->Pos);
-    InvalidTokenError(CurrentToken());
-    pointer++;
+function ParseStatement() SyntaxNode
+{
+    // we only got one type of statement atm lol
+    return ParseExpressionStatement();
+}
+
+function ParseExpressionStatement() SyntaxNode
+{
+    var exp <- ParseExpression();
+    return make ExpressionStatementNode(exp->Pos, exp);
 }
 
 
-function ParseKeyFunc(){
-    if(CurrentToken() -> Value = "Print"){
-        ParsePrintToken();
-        return;
-    }
-    ReportError("Not Implemented yet!", ErrorType->UnimplementedError, CurrentToken()->Pos);
-    InvalidTokenError(CurrentToken());
-    pointer++;
+////// EXPRESSIONS //////
+
+function ParseExpression() ExpressionSyntax
+{
+    //for now were just redirecting but here wed do non binary stuff like "make"
+
+    return PeekToken(1)->Type = TokenType->Operation ? ParseBinaryExpression(0) : ParseExpressionInternal();
 }
 
-function ParseKeyword(){
+function ParseBinaryExpression(parentPrec int) ExpressionSyntax 
+{
+    var left <- ParseExpressionInternal();
 
-    //For now
-    ReportError("Not Implemented yet!", ErrorType->UnimplementedError, CurrentToken()->Pos);
-    InvalidTokenError(CurrentToken());
-    pointer++;
-    return;
+    while (true)
+    {
+        var precedence <- GetOperatorPrecedence(CurrentToken());
+        if (precedence = 0 || precedence <= parentPrec)
+            break;
 
-
-    if(CurrentToken() -> Value = "package"){
-        if(string(PeekToken(1) -> Type) = string(TokenType -> Word)){
-            containers ->Push(GenContainer("packageInc", GenContainer("Value", PeekToken(1) -> Value)))
-            packages ->Push(PeekToken(1) -> Value)
-        }
-        else{
-            InvalidTokenError(PeekToken(1));
-        }
-        pointer++;
-        pointer++;
-        return;
+        var op <- ParseOperator();
+        var right <- ParseBinaryExpression(precedence);
+        left <- make BinaryExpressionNode(left->Pos, left, right, op);
     }
-    if(CurrentToken() -> Value = "use"){
-        if(string(PeekToken(1) -> Type) = string(TokenType -> Word)){
-            containers ->Push(GenContainer("packageUse", GenContainer("Value", PeekToken(1) -> Value)))
-            upackages ->Push(PeekToken(1) -> Value)
-        }
-        else{
-            InvalidTokenError(PeekToken(1));
-        }
-        pointer++;
-        pointer++;
-        return;
-    }
-    InvalidTokenError(CurrentToken());
-    pointer++;
+
+    return left;
 }
 
-
-// Function parsing(print etc) //
-// Ik this might be too early on, but i just want to not get 500 errors
-function ParsePrintToken(){ // Words cannot describe my confusion, as ParsePrint is defined but never mentioned in the files...
-    if(string(PeekToken(1) -> Type) = string(TokenType -> OpenParenthasis)){
-        Step(1);
-        if(string(PeekToken(1) -> Type) = string(TokenType -> String)){
-            containers ->Push(GenContainer("print", GenContainer("Value", PeekToken(1) -> Value)));
-            Step(3);
-            return;
-        }
-    }
-    InvalidTokenError(PeekToken(1));
+function ParseExpressionInternal() ExpressionSyntax
+{
+    if (int(CurrentToken()->Type) = TokenType->Number) return ParseNumberLiteral();
+    if (int(CurrentToken()->Type) = TokenType->String) return ParseStringLiteral();
+    
     Step(1);
+    return make LiteralExpressionNode(Position(nil), Token(nil));
 }
 
-function InvalidTokenError(token Token){
-    ReportError("Unexpected tokentype: """ + string(token -> Type) + """ with Value: " + string(token -> Value), ErrorType->InvalidTokenError, token->Pos);
-}
-function InvalidUsageFuncError(token Token){
-    ReportError("Function: """ + string(token -> Type) + """ cannot be used as a variable", ErrorType->InvalidUsageError, token->Pos);
+function ParseNumberLiteral() ExpressionSyntax
+{
+    var num <- Consume(TokenType->Number);
+    return make LiteralExpressionNode(num->Pos, num);
 }
 
+function ParseStringLiteral() ExpressionSyntax
+{
+    var str <- Consume(TokenType->String);
+    return make LiteralExpressionNode(str->Pos, str);
+}
+
+
+////// OTHER STUFF IDK LOL //////
+
+function ParseOperator() BinaryOperatorKind
+{
+    var op <- Consume(TokenType->Operation);
+
+    if (op->Value = "+") return BinaryOperatorKind->Plus;
+    if (op->Value = "-") return BinaryOperatorKind->Minus;
+    if (op->Value = "*") return BinaryOperatorKind->Multiply;
+    if (op->Value = "/") return BinaryOperatorKind->Divide;
+
+    return BinaryOperatorKind(0);
+}
+
+//utils
 function CurrentToken() Token { return PeekToken(0); }   // Current token in code
-function PeekToken(offset int) Token { if (EOFO(offset)) return make Token(TokenType -> Word, "Null", Position(null)); return tokens[pointer + offset] } // Peek into the future
+function PeekToken(offset int) Token { if (EOFOT(offset)) return make Token(TokenType(0), "Null", Position(null)); return tokens[pointer + offset] } // Peek into the future
 function EOFT() bool { return pointer >= tokens ->GetLength(); }  // Is it EOF at current?
 function EOFOT(offset int) bool { return pointer + offset >= tokens ->GetLength(); }   // Is it EOF in [offset] chars
 
-
-class Container{
-    set Ctype <- "Undefined";
-    set any Value <- null;
-}
-
-function GenContainer(Ctype string, Value any) Container{
-    var c <- make Container();
-    c -> Ctype <- Ctype;
-    c -> Value <- Value;
-    return c;
-}
-
-function PrintContainer(container Container, indent string){
-    if(container -> Ctype = "Value"){
-        Print(indent + "\\" + container ->Ctype + ": " + string(container -> Value))
+function Consume(ttype TokenType) Token
+{
+    if (CurrentToken()->Type = ttype)
+    {
+        Step(1);
+        return PeekToken(-1);
     }
-    if(container -> Ctype = "Values"){
-        var Values <- ContainerArr(container ->Value)
-        for(var i <- 0; i < Values -> GetLength(); i++){
-            PrintContainer(Values[i], indent + " ")
-        }
-    }   
-    else if(string(container -> Value) = "Container"){
-        Print(indent + "\\" + container ->Ctype)
-        PrintContainer(Container(container -> Value), indent + " ")
-    }
+    else
+        UnexpectedTokenError(CurrentToken()->Type, ttype);
+
+    return Token(nil);
 }
+
+//error reporters
+function InvalidTokenError(token Token) { ReportError("Unexpected tokentype: """ + string(token -> Type) + """ with Value: " + string(token -> Value), ErrorType->InvalidTokenError, token->Pos);}
+function UnexpectedTokenError(got TokenType, expected TokenType) { ReportError("Unexpected Token: """ + string(got) + """ expected: " + string(expected), ErrorType->InvalidTokenError, CurrentToken()->Pos);}
+function InvalidUsageFuncError(token Token) { ReportError("Function: """ + string(token -> Type) + """ cannot be used as a variable", ErrorType->InvalidUsageError, token->Pos);}

@@ -1,0 +1,22 @@
+//Compiler/Parsing/Nodes/syntaxnode in rrc
+
+abs class SyntaxNode
+{
+    virt set Position Pos;
+    virt set SyntaxType Type;
+
+    function Constructor(pos Position)
+    {
+        Pos <- pos;
+    }
+}
+
+enum SyntaxType
+{
+    //expressions
+    LiteralExpressionSyntax,
+    BinaryExpressionSyntax,
+
+    //statements
+    ExpressionStatementSyntax,
+}

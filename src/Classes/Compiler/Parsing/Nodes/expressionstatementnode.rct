@@ -1,0 +1,13 @@
+//Compiler/Parsing/Nodes/expressionstatementnode in rrc
+
+class ExpressionStatementNode (SyntaxNode)
+{
+    set ExpressionSyntax Expression;
+
+    function Constructor(pos Position, exp ExpressionSyntax)
+    {
+        base(pos);
+        Expression <- exp;
+        Type <- SyntaxType->ExpressionStatementSyntax;
+    }
+}

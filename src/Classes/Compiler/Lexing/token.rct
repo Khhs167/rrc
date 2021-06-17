@@ -19,7 +19,7 @@ enum TokenType
     Newline,
 
     String,
-    Num,
+    Number,
     
     OpenParenthasis,
     CloseParenthasis,

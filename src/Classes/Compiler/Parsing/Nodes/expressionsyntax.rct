@@ -1,0 +1,12 @@
+//Compiler/Parsing/Nodes/expressionsyntax in rrc
+
+abs class ExpressionSyntax
+{
+    virt set Position Pos;
+    virt set SyntaxType Type;
+
+    function Constructor(pos Position)
+    {
+        Pos <- pos;
+    }
+}
