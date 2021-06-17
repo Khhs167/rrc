@@ -34,7 +34,7 @@ function ParseExpression() ExpressionSyntax
 {
     //for now were just redirecting but here wed do non binary stuff like "make"
 
-    return PeekToken(1)->Type = TokenType->Operation ? ParseBinaryExpression(0) : ParseExpressionInternal();
+    return string(PeekToken(1)->Type) = string(TokenType->Operation) ? ParseBinaryExpression(0) : ParseExpressionInternal();
 }
 
 function ParseBinaryExpression(parentPrec int) ExpressionSyntax 
@@ -99,7 +99,7 @@ function EOFOT(offset int) bool { return pointer + offset >= tokens ->GetLength(
 
 function Consume(ttype TokenType) Token
 {
-    if (CurrentToken()->Type = ttype)
+    if (int(CurrentToken()->Type) = ttype)
     {
         Step(1);
         return PeekToken(-1);

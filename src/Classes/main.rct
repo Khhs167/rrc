@@ -46,7 +46,7 @@ function PrintNode(node SyntaxNode, offset string)
     SetConsoleForeground(15);
     Write(offset + "└> "); SetConsoleForeground(13); Print(string(node->Type));
 
-    if (node->Type = SyntaxType->ExpressionStatementSyntax)
+    if (int(node->Type) = SyntaxType->ExpressionStatementSyntax)
     {
         PrintExpression(ExpressionStatementNode(node)->Expression, offset + "     ");
         Print(">> " +  string(GetValue(ExpressionStatementNode(node)->Expression)));
