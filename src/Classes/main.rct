@@ -4,6 +4,7 @@ package io; use io;
 
 #attach("Compiler/Lexing/Lexing.rct");
 #attach("Compiler/Parsing/Parsing.rct");
+#attach("Compiler/Parsing/Nodes/Nodes.rct");
 #attach("Compiler/Diagnostics/Diagnostics.rct");
 #attach("Compiler/languagedefs.rct");
 
@@ -23,29 +24,77 @@ Print("Code:\n\n" + code)
 Print("");
 
 Lex();
-
-if (hasError)
-{
-    PrintErrors();
-    die(-1);
-}
-
-
+if (hasError) { PrintErrors(); die(-1); }
 
 Parse();
+if (hasError) { PrintErrors(); die(-1);}
 
-if (hasError)
-{
-    PrintErrors();
-    die(-1);
-}
+
 Print("Tokens:\n")
 for(var i <- 0; i < tokens -> GetLength(); i++){
     Print("[" + string(tokens[i] -> Type) + ", " + tokens[i] -> Value + "]");
 }
 Print("");
 
-Print("Containers/Statements:\n")
-for(var i <- 0; i < containers -> GetLength(); i++){
-    PrintContainer(containers[i], " ")
+Print("Nodes:\n")
+for(var i <- 0; i < nodes -> GetLength(); i++){
+    PrintNode(nodes[i], "");
+}
+
+function PrintNode(node SyntaxNode, offset string)
+{
+    SetConsoleForeground(15);
+    Write(offset + "└> "); SetConsoleForeground(13); Print(string(node->Type));
+
+    if (node->Type = SyntaxType->ExpressionStatementSyntax)
+    {
+        PrintExpression(ExpressionStatementNode(node)->Expression, offset + "     ");
+        Print(">> " +  string(GetValue(ExpressionStatementNode(node)->Expression)));
+    }
+}
+
+function PrintExpression(node ExpressionSyntax, offset string)
+{
+    SetConsoleForeground(15);
+    if (node is LiteralExpressionNode)
+    {
+        var cnode <- LiteralExpressionNode(node);
+        Write(offset + "└> "); SetConsoleForeground(10); Print(string(cnode->Type)); SetConsoleForeground(15);
+        Write(offset + "     └> ") SetConsoleForeground(12); Print(cnode->LiteralToken->Value); SetConsoleForeground(15);
+    }
+    else if (node is BinaryExpressionNode)
+    {
+        var cnode <- BinaryExpressionNode(node);
+        Write(offset + "└> "); SetConsoleForeground(10); Print(string(cnode->Type)); SetConsoleForeground(15);
+        PrintExpression(cnode->Left, offset + "     ");
+        Write(offset + "     └> "); SetConsoleForeground(3); Print(string(cnode->Operator));
+        PrintExpression(cnode->Right, offset + "     ");
+    }
+}
+
+function GetValue(exp ExpressionSyntax) int
+{
+    if (exp is LiteralExpressionNode)
+    {
+        var cexp <- LiteralExpressionNode(exp);
+        return int(cexp->LiteralToken->Value);
+    }
+    else if (exp is BinaryExpressionNode)
+    {
+        var cexp <- BinaryExpressionNode(exp);
+
+        if (string(cexp->Operator) = string(BinaryOperatorKind->Plus))
+            return GetValue(cexp->Left) + GetValue(cexp->Right);
+
+        if (string(cexp->Operator) = string(BinaryOperatorKind->Minus))
+            return GetValue(cexp->Left) - GetValue(cexp->Right);
+
+        if (string(cexp->Operator) = string(BinaryOperatorKind->Multiply))
+            return GetValue(cexp->Left) * GetValue(cexp->Right);
+
+        if (string(cexp->Operator) = string(BinaryOperatorKind->Divide))
+            return GetValue(cexp->Left) / GetValue(cexp->Right);
+    }
+
+    return 0;
 }
