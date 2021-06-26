@@ -3,6 +3,24 @@
 ////// ERROR OUTPUTTING //////
 function PrintErrors()
 {
+
+    //I will just stick in warnings here, please excuse me...
+    
+    from (i <- 0) to warnings->GetLength() -1
+    {
+        var err <- errors[i];
+
+        SetConsoleForeground(4);
+        Write("[L: " + string(err->Pos->Line) + " C: " + string(err->Pos->Char) + "] [ ");
+
+        SetConsoleForeground(6);
+        Write(string(err->Type));
+
+        SetConsoleForeground(4);
+        Print(" ] " + err->Message);
+    }
+    
+    
     from (i <- 0) to errors->GetLength() -1
     {
         var err <- errors[i];
