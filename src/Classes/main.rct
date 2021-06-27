@@ -89,6 +89,13 @@ function GetValue(exp ExpressionSyntax) int
     if (exp is LiteralExpressionNode)
     {
         var cexp <- LiteralExpressionNode(exp);
+        if(string(cexp ->LiteralToken->Type) != string(TokenType->Number)){
+            SetConsoleForeground(4);
+            Print("RuntimeError: Cannot use type """ + string(cexp ->LiteralToken->Type) + """ yet!");
+            SetConsoleForeground(7);
+            die(-1);
+            return int(nil);
+        }
         return int(cexp->LiteralToken->Value);
     }
     else if (exp is BinaryExpressionNode)
