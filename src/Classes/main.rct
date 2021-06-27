@@ -61,12 +61,22 @@ function PrintExpression(node ExpressionSyntax, offset string)
     if (node is LiteralExpressionNode)
     {
         var cnode <- LiteralExpressionNode(node);
+        if(cnode = nil || cnode ->Type = nil || cnode ->LiteralToken = nil){
+            Write(offset + "    └> "); SetConsoleForeground(10); Print("nil"); SetConsoleForeground(15);
+            return;
+        }
+
         Write(offset + "└> "); SetConsoleForeground(10); Print(string(cnode->Type)); SetConsoleForeground(15);
         Write(offset + "     └> ") SetConsoleForeground(12); Print(cnode->LiteralToken->Value); SetConsoleForeground(15);
     }
     else if (node is BinaryExpressionNode)
     {
         var cnode <- BinaryExpressionNode(node);
+        if(cnode = nil || cnode ->Type = nil || cnode ->Operator = nil){
+            Write(offset + "└> "); SetConsoleForeground(10); Print("nil"); SetConsoleForeground(15);
+            return;
+        }
+        
         Write(offset + "└> "); SetConsoleForeground(10); Print(string(cnode->Type)); SetConsoleForeground(15);
         PrintExpression(cnode->Left, offset + "     ");
         Write(offset + "     └> "); SetConsoleForeground(3); Print(string(cnode->Operator));

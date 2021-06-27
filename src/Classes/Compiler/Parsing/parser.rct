@@ -60,7 +60,7 @@ function ParseExpressionInternal() ExpressionSyntax
     if (int(CurrentToken()->Type) = TokenType->Number) return ParseNumberLiteral();
     if (int(CurrentToken()->Type) = TokenType->String) return ParseStringLiteral();
     
-    ReportWarning("Token of type: " + string(CurrentToken() ->Type) + " is not supported, but doesnt return an error for now", WarningType->Warning, CurrentToken() ->Pos);
+    ReportWarning("Token of type: """ + string(CurrentToken() ->Type) + """ is not supported, but doesnt return an error for now", WarningType->Warning, CurrentToken() ->Pos);
     Step(1);
     return make LiteralExpressionNode(Position(nil), Token(nil));
 }
