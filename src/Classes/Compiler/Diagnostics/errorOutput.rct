@@ -1,24 +1,27 @@
 //Compiler/Diagnostics/errorOutput in rrc
 
 ////// ERROR OUTPUTTING //////
-function PrintErrors()
-{
 
-    //I will just stick in warnings here, please excuse me...
-    
+function PrintWarnings() //Ik this shouldnt be here but...
+{
     from (i <- 0) to warnings->GetLength() -1
     {
-        var err <- errors[i];
+        var err <- warnings[i];
 
-        SetConsoleForeground(4);
+        Write(Char(27) + "[38;2;255;200;0m");
         Write("[L: " + string(err->Pos->Line) + " C: " + string(err->Pos->Char) + "] [ ");
 
-        SetConsoleForeground(6);
+        SetConsoleForeground(4);
         Write(string(err->Type));
 
-        SetConsoleForeground(4);
+        Write(Char(27) + "[38;2;255;200;0m");
         Print(" ] " + err->Message);
     }
+    SetConsoleForeground(7);
+}
+
+function PrintErrors()
+{
     
     
     from (i <- 0) to errors->GetLength() -1

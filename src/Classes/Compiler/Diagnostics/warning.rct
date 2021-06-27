@@ -1,12 +1,13 @@
 //Compiler/Diagnostics/error in rrc
 
 ////// PREDEFINITIONS //////
-set warnings <- make Error array(0);
-
+set warnings <- make Warning array(0);
+set hasWarning <- false;
 ////// REPORTING //////
-set function ReportError(msg string, etype WarningType, pos Position)
+set function ReportWarning(msg string, etype WarningType, pos Position)
 {
     warnings->Push(make Warning(pos, etype, msg));
+    hasWarning <- true;
 }
 
 ////// WARNING CLASS //////

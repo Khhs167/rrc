@@ -24,9 +24,11 @@ Print("Code:\n\n" + code)
 Print("");
 
 Lex();
+if (hasWarning) { PrintWarnings(); }
 if (hasError) { PrintErrors(); die(-1); }
 
 Parse();
+if (hasWarning) { PrintWarnings(); }
 if (hasError) { PrintErrors(); die(-1);}
 
 
