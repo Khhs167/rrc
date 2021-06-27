@@ -59,8 +59,10 @@ function ParseExpressionInternal() ExpressionSyntax
 {
     if (int(CurrentToken()->Type) = TokenType->Number) return ParseNumberLiteral();
     if (int(CurrentToken()->Type) = TokenType->String) return ParseStringLiteral();
-    
-    ReportWarning("Token of type: """ + string(CurrentToken() ->Type) + """ is not supported, but doesnt return an error for now", WarningType->Warning, CurrentToken() ->Pos);
+    if(BUILDMODE = "Dev" || BUILDMODE = "DevTest")
+        ReportWarning("Token of type: """ + string(CurrentToken() ->Type) + """ is not supported, but doesnt return an error for now", WarningType->Warning, CurrentToken() ->Pos);
+    else if(BUILDMODE = "Debug")
+        ReportError("Token of type: """ + string(CurrentToken() ->Type) + """ is not supported", ErrorType->InvalidTokenError, CurrentToken() ->Pos);
     Step(1);
     return make LiteralExpressionNode(Position(nil), Token(nil));
 }

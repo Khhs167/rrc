@@ -7,18 +7,27 @@ package io; use io;
 #attach("Compiler/Parsing/Nodes/Nodes.rct");
 #attach("Compiler/Diagnostics/Diagnostics.rct");
 #attach("Compiler/languagedefs.rct");
+#attach("BUILDSETTINGS.rct");
+set code <- "";
+if(BUILDMODE = "Dev" || BUILDMODE = "Debug"){
+    //Read a file, not used rn
+    Write("Source file: ");
+    set sourceFile <- Input();
 
-//Read a file, not used rn
-//Write("Source file: ");
-//set sourceFile <- Input();
-
-//Check if file exists
-//if(!FileExists(sourceFile)){
-    //Print("Invalid file!");
-    //die(0);
-//}
-
-set code <- ReadFile("Build/test.rct") //DEBUG: Set the code to this
+    //Check if file exists
+    if(!FileExists(sourceFile)){
+        Print("Invalid file!");
+        die(0);
+    }
+    code <- ReadFile(sourceFile);
+}
+else if(BUILDMODE = "DevTest"){
+    code <- ReadFile("Build/test.rct") //DEBUG: Set the code to this
+}
+else{
+    Print("Invalid BUILDMODE: " + BUILDMODE);
+    die(-1);
+}
 
 Print("Code:\n\n" + code)
 Print("");
