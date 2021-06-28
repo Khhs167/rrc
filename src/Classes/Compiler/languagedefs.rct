@@ -9,3 +9,14 @@ function ContainsItem(arr stringArr, item string) bool{
 
 set keywords <- make string array { "package", "var", "use" };
 set keyfuncs <- make string array { "Print" };
+
+function GetOperatorPrecedence(op Token) int
+{
+    if (op->Value = "+") return 1;
+    if (op->Value = "-") return 1;
+
+    if (op->Value = "*") return 2;
+    if (op->Value = "/") return 2;
+
+    return 0;
+}

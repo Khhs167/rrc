@@ -32,5 +32,9 @@ enum ErrorType
     InvalidCharacterError,
     UnimplementedError,
     InvalidUsageError,
+<<<<<<< HEAD
     EOFError
+=======
+    
+>>>>>>> 981a05e58bbc55a41409734bb675a0642c8d12fd
 }

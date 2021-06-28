@@ -1,0 +1,13 @@
+//Compiler/Parsing/Nodes/literalexpressionnode in rrc
+
+class LiteralExpressionNode (ExpressionSyntax)
+{
+    set Token LiteralToken;
+    ovr set Type <- SyntaxType->LiteralExpressionSyntax;
+
+    function Constructor(pos Position, literal Token)
+    {
+        base(pos);
+        LiteralToken <- literal;
+    }
+}

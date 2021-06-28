@@ -4,9 +4,17 @@ package io; use io;
 
 #attach("Compiler/Lexing/Lexing.rct");
 #attach("Compiler/Parsing/Parsing.rct");
+#attach("Compiler/Parsing/Nodes/Nodes.rct");
 #attach("Compiler/Diagnostics/Diagnostics.rct");
 #attach("Compiler/languagedefs.rct");
+#attach("BUILDSETTINGS.rct");
+set code <- "";
+if(BUILDMODE = "Dev" || BUILDMODE = "Debug"){
+    //Read a file, not used rn
+    Write("Source file: ");
+    set sourceFile <- Input();
 
+<<<<<<< HEAD
 //Read a file, not used rn
 //Write("Source file: ");
 //set sourceFile <- Input();
@@ -18,32 +26,126 @@ package io; use io;
 //}
 
 set code <- ReadFile("Build/test.rct")
+=======
+    //Check if file exists
+    if(!FileExists(sourceFile)){
+        Print("Invalid file!");
+        die(0);
+    }
+    code <- ReadFile(sourceFile);
+}
+else if(BUILDMODE = "DevTest"){
+    code <- ReadFile("Build/test.rct") //DEBUG: Set the code to this
+}
+else{
+    Print("Invalid BUILDMODE: " + BUILDMODE);
+    die(-1);
+}
+>>>>>>> 981a05e58bbc55a41409734bb675a0642c8d12fd
 
 Print("Code:\n\n" + code)
 Print("");
 
 Lex();
+<<<<<<< HEAD
 
 if (hasError)
 {
     PrintErrors();
     die(-1);
 }
+=======
+if (hasWarning) { PrintWarnings(); }
+if (hasError) { PrintErrors(); die(-1); }
+>>>>>>> 981a05e58bbc55a41409734bb675a0642c8d12fd
 
 Parse();
+if (hasWarning) { PrintWarnings(); }
+if (hasError) { PrintErrors(); die(-1);}
 
-if (hasError)
-{
-    PrintErrors();
-    die(-1);
-}
+
 Print("Tokens:\n")
 for(var i <- 0; i < tokens -> GetLength(); i++){
     Print("[" + string(tokens[i] -> Type) + ", " + tokens[i] -> Value + "]");
 }
 Print("");
 
-Print("Containers/Statements:\n")
-for(var i <- 0; i < containers -> GetLength(); i++){
-    PrintContainer(containers[i], " ")
+Print("Nodes:\n")
+for(var i <- 0; i < nodes -> GetLength(); i++){
+    PrintNode(nodes[i], "");
+}
+
+function PrintNode(node SyntaxNode, offset string)
+{
+    SetConsoleForeground(15);
+    Write(offset + "└> "); SetConsoleForeground(13); Print(string(node->Type));
+
+    if (int(node->Type) = SyntaxType->ExpressionStatementSyntax)
+    {
+        PrintExpression(ExpressionStatementNode(node)->Expression, offset + "     ");
+        Print(">> " +  string(GetValue(ExpressionStatementNode(node)->Expression)));
+    }
+}
+
+function PrintExpression(node ExpressionSyntax, offset string)
+{
+    SetConsoleForeground(15);
+    if (node is LiteralExpressionNode)
+    {
+        var cnode <- LiteralExpressionNode(node);
+        if(cnode = nil || cnode ->Type = nil || cnode ->LiteralToken = nil){
+            Write(offset + "    └> "); SetConsoleForeground(10); Print("nil"); SetConsoleForeground(15);
+            return;
+        }
+
+        Write(offset + "└> "); SetConsoleForeground(10); Print(string(cnode->Type)); SetConsoleForeground(15);
+        Write(offset + "     └> ") SetConsoleForeground(12); Print(cnode->LiteralToken->Value); SetConsoleForeground(15);
+    }
+    else if (node is BinaryExpressionNode)
+    {
+        var cnode <- BinaryExpressionNode(node);
+        if(cnode = nil || cnode ->Type = nil || cnode ->Operator = nil){
+            Write(offset + "└> "); SetConsoleForeground(10); Print("nil"); SetConsoleForeground(15);
+            return;
+        }
+        
+        Write(offset + "└> "); SetConsoleForeground(10); Print(string(cnode->Type)); SetConsoleForeground(15);
+        PrintExpression(cnode->Left, offset + "     ");
+        Write(offset + "     └> "); SetConsoleForeground(3); Print(string(cnode->Operator));
+        PrintExpression(cnode->Right, offset + "     ");
+    }
+}
+
+function GetValue(exp ExpressionSyntax) int
+{
+    if (exp is LiteralExpressionNode)
+    {
+        var cexp <- LiteralExpressionNode(exp);
+        if(string(cexp ->LiteralToken->Type) != string(TokenType->Number)){
+            SetConsoleForeground(4);
+            Print("RuntimeError: Cannot use type """ + string(cexp ->LiteralToken->Type) + """ yet!");
+            SetConsoleForeground(7);
+            die(-1);
+            return int(nil);
+        }
+        return int(cexp->LiteralToken->Value);
+    }
+    else if (exp is BinaryExpressionNode)
+    {
+        var cexp <- BinaryExpressionNode(exp);
+
+        if (string(cexp->Operator) = string(BinaryOperatorKind->Plus))
+            return GetValue(cexp->Left) + GetValue(cexp->Right);
+
+        if (string(cexp->Operator) = string(BinaryOperatorKind->Minus))
+            return GetValue(cexp->Left) - GetValue(cexp->Right);
+
+        if (string(cexp->Operator) = string(BinaryOperatorKind->Multiply))
+            return GetValue(cexp->Left) * GetValue(cexp->Right);
+
+        if (string(cexp->Operator) = string(BinaryOperatorKind->Divide))
+            return GetValue(cexp->Left) / GetValue(cexp->Right);
+    }
+
+    return 0;
 }

@@ -2,6 +2,8 @@
 # ReCT ReCT Compiler
 A ReCT compiler in ReCT
 
+For compiling, please see [COMPILE.md](COMPILE.md)
+
 ## Message to devs
 Plese just do rctc run in /src/
 

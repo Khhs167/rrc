@@ -36,7 +36,7 @@ function Lex() {
         if(Current() = "*") { tokens->Push(make Token(TokenType->Operation, "*", pos)); Step(1); continue; }
 
         if (IsLetter(Current())) { var word <- LexWord(); var wordType <- LexWordType(word); tokens ->Push(make Token(wordType, word, pos)); continue; }
-        if (IsDigit(Current())) { var num <- LexNum(); tokens ->Push(make Token(TokenType -> Num, num, pos)); continue; }
+        if (IsDigit(Current())) { var num <- LexNum(); tokens ->Push(make Token(TokenType -> Number, num, pos)); continue; }
 
         //lets keep it simple for now. -rc
         //if(Current() = ":" && Peek(1) = ":") { tokens->Push(GenToken(TokenType->PackageAcs, "")); Step(1); Step(1); continue;}

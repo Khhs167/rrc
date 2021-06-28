@@ -1,0 +1,26 @@
+//Compiler/Parsing/Nodes/binaryexpressionnode in rrc
+
+class BinaryExpressionNode (ExpressionSyntax)
+{
+    set ExpressionSyntax Left;
+    set ExpressionSyntax Right;
+    set BinaryOperatorKind Operator;
+
+    ovr set Type <- SyntaxType->BinaryExpressionSyntax;
+
+    function Constructor(pos Position, left ExpressionSyntax, right ExpressionSyntax, op BinaryOperatorKind)
+    {
+        base(pos);
+        Left <- left;
+        Right <- right;
+        Operator <- op;
+    }
+}
+
+enum BinaryOperatorKind
+{
+    Plus,
+    Minus,
+    Multiply,
+    Divide
+}
