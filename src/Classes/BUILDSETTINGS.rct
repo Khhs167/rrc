@@ -12,7 +12,8 @@
 //  DevTest - Reads all code from test.rct
 //  Dev - Reads code from specified file
 //  Debug - Like dev, but more errors instead of warnings!
+//  DebugTest - Like debug, but reads from test.rct
 
 // Note that it wont run if this is set to something else!
 
-set BUILDMODE <- "DevTest";
+set BUILDMODE <- "DebugTest";

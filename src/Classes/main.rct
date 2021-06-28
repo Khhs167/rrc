@@ -21,7 +21,7 @@ if(BUILDMODE = "Dev" || BUILDMODE = "Debug"){
     }
     code <- ReadFile(sourceFile);
 }
-else if(BUILDMODE = "DevTest"){
+else if(BUILDMODE = "DevTest" || BUILDMODE = "DebugTest"){
     code <- ReadFile("Build/test.rct") //DEBUG: Set the code to this
 }
 else{
@@ -109,7 +109,6 @@ function GetValue(exp ExpressionSyntax) int
             Print("RuntimeError: Cannot use type """ + string(cexp ->LiteralToken->Type) + """ yet!");
             SetConsoleForeground(7);
             die(-1);
-            return int(nil);
         }
         return int(cexp->LiteralToken->Value);
     }

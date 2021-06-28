@@ -99,7 +99,6 @@ function LexShortFloat(){
     var num <- "0.";
     var isFloat <- false;
     var pointerStart <- pointer;
-    Print("ShortFloat")
     Step(1);
     while(IsDigit(Current()) && !EOF()){
         num <-+ Current();
