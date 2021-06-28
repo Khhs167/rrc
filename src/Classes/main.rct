@@ -98,6 +98,12 @@ function GetValue(exp ExpressionSyntax) int
     if (exp is LiteralExpressionNode)
     {
         var cexp <- LiteralExpressionNode(exp);
+        if(cexp ->LiteralToken = nil){
+            SetConsoleForeground(4);
+            Print("RuntimeError: undefined node!");
+            SetConsoleForeground(7);
+            return int(nil);
+        }
         if(string(cexp ->LiteralToken->Type) != string(TokenType->Number)){
             SetConsoleForeground(4);
             Print("RuntimeError: Cannot use type """ + string(cexp ->LiteralToken->Type) + """ yet!");
