@@ -11,6 +11,7 @@ function Lex() {
     while(!EOF()){
         // stick comments in front, to save resources
         if(Current() = "/" && Peek(1) = "/") { while(Current() != "\n") { Step(1); } continue; }
+        if(Current() = "/" && Peek(1) = "*") { var start <- pointer; var closed <- false; while(!EOF()) { Step(1); if(Current() = "*" && Peek(1) = "/") { closed <- true; break; } } if(!closed) {ReportError("Unclosed multi-line comment", ErrorType->EOFError, GetPos(start, code)); break; } Step(2); continue; }
 
         // Ok, do checking here ig //
 

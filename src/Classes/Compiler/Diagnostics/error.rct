@@ -31,5 +31,6 @@ enum ErrorType
     UnknownError,
     InvalidCharacterError,
     UnimplementedError,
-    InvalidUsageError
+    InvalidUsageError,
+    EOFError
 }

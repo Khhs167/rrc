@@ -17,7 +17,7 @@ package io; use io;
     //die(0);
 //}
 
-set code <- ReadFile("Build/test.rct") //DEBUG: Set the code to this
+set code <- ReadFile("Build/test.rct")
 
 Print("Code:\n\n" + code)
 Print("");
@@ -29,8 +29,6 @@ if (hasError)
     PrintErrors();
     die(-1);
 }
-
-
 
 Parse();
 
