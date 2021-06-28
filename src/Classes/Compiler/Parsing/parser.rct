@@ -57,7 +57,8 @@ function ParseBinaryExpression(parentPrec int) ExpressionSyntax
 
 function ParseExpressionInternal() ExpressionSyntax
 {
-    if (int(CurrentToken()->Type) = TokenType->Int) return ParseNumberLiteral();
+    if (int(CurrentToken()->Type) = TokenType->Int) return ParseIntLitteral();
+    if (int(CurrentToken()->Type) = TokenType->Float) return ParseFloatLitteral();
     if (int(CurrentToken()->Type) = TokenType->String) return ParseStringLiteral();
     if(BUILDMODE = "Dev" || BUILDMODE = "DevTest")
         ReportWarning("Token of type: """ + string(CurrentToken() ->Type) + """ is not supported, but doesnt return an error for now", WarningType->Warning, CurrentToken() ->Pos);
@@ -67,9 +68,15 @@ function ParseExpressionInternal() ExpressionSyntax
     return make LiteralExpressionNode(Position(nil), Token(nil));
 }
 
-function ParseNumberLiteral() ExpressionSyntax
+function ParseIntLitteral() ExpressionSyntax
 {
     var num <- Consume(TokenType->Int);
+    return make LiteralExpressionNode(num->Pos, num);
+}
+
+function ParseFloatLitteral() ExpressionSyntax
+{
+    var num <- Consume(TokenType->Float);
     return make LiteralExpressionNode(num->Pos, num);
 }
 

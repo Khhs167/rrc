@@ -93,7 +93,7 @@ function PrintExpression(node ExpressionSyntax, offset string)
     }
 }
 
-function GetValue(exp ExpressionSyntax) int
+function GetValue(exp ExpressionSyntax) float
 {
     if (exp is LiteralExpressionNode)
     {
