@@ -36,7 +36,8 @@ function Lex() {
         if(Current() = "*") { tokens->Push(make Token(TokenType->Operation, "*", pos)); Step(1); continue; }
 
         if (IsLetter(Current())) { var word <- LexWord(); var wordType <- LexWordType(word); tokens ->Push(make Token(wordType, word, pos)); continue; }
-        if (IsDigit(Current())) { var num <- LexNum(); tokens ->Push(make Token(TokenType -> Number, num, pos)); continue; }
+        if (IsDigit(Current())) { LexNum(); ; continue; }
+        if(Current() = "." && IsDigit(Peek(1))) { LexShortFloat(); continue; }
 
         //lets keep it simple for now. -rc
         //if(Current() = ":" && Peek(1) = ":") { tokens->Push(GenToken(TokenType->PackageAcs, "")); Step(1); Step(1); continue;}
@@ -75,13 +76,39 @@ function LexWord() string{
     return word;
 }
 
-function LexNum() string{
+function LexNum(){
     var num <- "";
+    var isFloat <- false;
+    var pointerStart <- pointer;
     while(IsDigit(Current()) && !EOF()){
         num <-+ Current();
+        if(Peek(1) = "." && IsDigit(Peek(2))){
+            if(isFloat){
+                ReportError("Floating point number cannot have more than one comma", ErrorType->UnknownError, GetPos(pointer, code));
+            }
+            num <-+ ".";
+            isFloat <- true;
+            Step(1);
+        }
         Step(1);
     }
-    return num;
+    tokens ->Push(make Token(isFloat ? TokenType -> Float : TokenType -> Int, num, GetPos(pointerStart, code);))
+}
+
+function LexShortFloat(){
+    var num <- "0.";
+    var isFloat <- false;
+    var pointerStart <- pointer;
+    Print("ShortFloat")
+    Step(1);
+    while(IsDigit(Current()) && !EOF()){
+        num <-+ Current();
+        if(Peek(1) = "." && IsDigit(Peek(2))){
+            ReportError("Floating point number cannot have more than one comma", ErrorType->UnknownError, GetPos(pointer, code));
+        }
+        Step(1);
+    }
+    tokens ->Push(make Token(TokenType -> Float, num, GetPos(pointerStart, code);))
 }
 
 function LexString() string{

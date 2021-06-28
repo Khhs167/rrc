@@ -104,7 +104,7 @@ function GetValue(exp ExpressionSyntax) int
             SetConsoleForeground(7);
             return int(nil);
         }
-        if(string(cexp ->LiteralToken->Type) != string(TokenType->Number)){
+        if(string(cexp ->LiteralToken->Type) != string(TokenType->Int)){
             SetConsoleForeground(4);
             Print("RuntimeError: Cannot use type """ + string(cexp ->LiteralToken->Type) + """ yet!");
             SetConsoleForeground(7);
