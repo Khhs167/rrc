@@ -14,19 +14,6 @@ if(BUILDMODE = "Dev" || BUILDMODE = "Debug"){
     Write("Source file: ");
     set sourceFile <- Input();
 
-<<<<<<< HEAD
-//Read a file, not used rn
-//Write("Source file: ");
-//set sourceFile <- Input();
-
-//Check if file exists
-//if(!FileExists(sourceFile)){
-    //Print("Invalid file!");
-    //die(0);
-//}
-
-set code <- ReadFile("Build/test.rct")
-=======
     //Check if file exists
     if(!FileExists(sourceFile)){
         Print("Invalid file!");
@@ -41,23 +28,13 @@ else{
     Print("Invalid BUILDMODE: " + BUILDMODE);
     die(-1);
 }
->>>>>>> 981a05e58bbc55a41409734bb675a0642c8d12fd
 
 Print("Code:\n\n" + code)
 Print("");
 
 Lex();
-<<<<<<< HEAD
-
-if (hasError)
-{
-    PrintErrors();
-    die(-1);
-}
-=======
 if (hasWarning) { PrintWarnings(); }
 if (hasError) { PrintErrors(); die(-1); }
->>>>>>> 981a05e58bbc55a41409734bb675a0642c8d12fd
 
 Parse();
 if (hasWarning) { PrintWarnings(); }
