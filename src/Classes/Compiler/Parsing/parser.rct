@@ -60,6 +60,8 @@ function ParseExpressionInternal() ExpressionSyntax
     if (int(CurrentToken()->Type) = TokenType->Int) return ParseIntLitteral();
     if (int(CurrentToken()->Type) = TokenType->Float) return ParseFloatLitteral();
     if (int(CurrentToken()->Type) = TokenType->String) return ParseStringLiteral();
+
+    if (int(CurrentToken()->Type) = TokenType->OpenParenthasis) return ParseParenthasisLiteral();
     if(BUILDMODE = "Dev" || BUILDMODE = "DevTest")
         ReportWarning("Token of type: """ + string(CurrentToken() ->Type) + """ is not supported, but doesnt return an error for now", WarningType->Warning, CurrentToken() ->Pos);
     else if(BUILDMODE = "Debug" ||BUILDMODE = "DebugTest")
@@ -72,6 +74,19 @@ function ParseIntLitteral() ExpressionSyntax
 {
     var num <- Consume(TokenType->Int);
     return make LiteralExpressionNode(num->Pos, num);
+}
+
+function NilES() ExpressionSyntax{
+    return make LiteralExpressionNode(Position(nil), Token(nil));
+}
+
+function ParseParenthasisLiteral() ExpressionSyntax
+{
+    // TODO: Code
+
+    ReportError("Parenthasis are not supported yet!", ErrorType->InvalidTokenError, CurrentToken() ->Pos);
+    Step(1);
+    return make LiteralExpressionNode(Position(nil), Token(nil));
 }
 
 function ParseFloatLitteral() ExpressionSyntax

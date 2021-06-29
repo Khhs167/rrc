@@ -16,7 +16,8 @@ enum SyntaxType
     //expressions
     LiteralExpressionSyntax,
     BinaryExpressionSyntax,
+    ParenthasisNode,
 
     //statements
-    ExpressionStatementSyntax,
+    ExpressionStatementSyntax
 }

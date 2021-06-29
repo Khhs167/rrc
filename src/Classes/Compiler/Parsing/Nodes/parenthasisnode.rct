@@ -1,0 +1,14 @@
+//Compiler/Parsing/Nodes/parenthasisnode in rrc
+
+class ParenthasisNode (ExpressionSyntax)
+{
+    set SyntaxNode Content;
+
+    ovr set Type <- SyntaxType->ParenthasisNode;
+
+    function Constructor(pos Position, content SyntaxNode)
+    {
+        base(pos);
+        Content <- content;
+    }
+}

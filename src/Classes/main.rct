@@ -93,7 +93,7 @@ function PrintExpression(node ExpressionSyntax, offset string)
     }
 }
 
-function GetValue(exp ExpressionSyntax) float
+function GetValue(exp ExpressionSyntax) int
 {
     if (exp is LiteralExpressionNode)
     {
@@ -104,6 +104,7 @@ function GetValue(exp ExpressionSyntax) float
             SetConsoleForeground(7);
             return int(nil);
         }
+        
         if(string(cexp ->LiteralToken->Type) != string(TokenType->Int)){
             SetConsoleForeground(4);
             Print("RuntimeError: Cannot use type """ + string(cexp ->LiteralToken->Type) + """ yet!");

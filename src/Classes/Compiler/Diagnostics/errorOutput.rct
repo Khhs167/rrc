@@ -22,15 +22,13 @@ function PrintWarnings() //Ik this shouldnt be here but...
 
 function PrintErrors()
 {
-    
-    
     from (i <- 0) to errors->GetLength() -1
     {
         var err <- errors[i];
 
         SetConsoleForeground(4);
+        
         Write("[L: " + string(err->Pos->Line) + " C: " + string(err->Pos->Char) + "] [ ");
-
         SetConsoleForeground(6);
         Write(string(err->Type));
 
