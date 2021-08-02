@@ -1,4 +1,4 @@
-del ./Build/rcc.dll
-rctc ./Classes/main.rct -s -f -o ./Build/rcc.dll
+del ./Build/rrc.dll
+rctc ./Classes/main.rct -s -f -o ./Build/rrc.dll
 echo -- [ReCT Program] --
-dotnet ./Build/rcc.dll
+dotnet ./Build/rrc.dll
